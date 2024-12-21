@@ -2,6 +2,8 @@ import tape = require("tape");
 
 import Test = require("tape/lib/test");
 
+import { type RestoreFunction, type WrappedCall } from "tape";
+
 var name: string;
 var cb: tape.TestCase;
 var topts: tape.TestOptions;
@@ -260,4 +262,18 @@ tape(name, (test: tape.Test) => {
 
     test.teardown(() => {});
     test.teardown(async () => {});
+
+    const captureFnResults = test.captureFn(() => 42);
+    captureFnResults(); // $ExpectType number
+    captureFnResults.calls; // $ExpectType WrappedCall[]
+
+    const a: unknown[] = [];
+    const captureResults = test.capture(a, "push", () => "foo");
+    captureResults(); // $ExpectType WrappedCall[]
+    captureResults.restore; // $ExpectType RestoreFunction
+
+    function isFortyTwo(this: tape.Test, actual: unknown, message?: string) {
+        this.equal(actual, 42, message ?? "expected " + actual);
+    }
+    t.assertion(isFortyTwo, "not 42", "a message!"); // $ExpectType void
 });
