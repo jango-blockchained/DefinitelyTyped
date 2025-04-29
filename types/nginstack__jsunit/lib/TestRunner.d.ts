@@ -19,7 +19,7 @@ declare class TestRunner {
     testSuitesPerTestCaseId_: Record<string, TestSuite>;
     private logger_;
     breakOnFailure: boolean;
-    cluster: any;
+    cluster: import("@nginstack/engine/lib/cluster/EngineCluster");
     private readVfsTests_;
     private readLocalTests_;
     private logAndEmitEvent_;
